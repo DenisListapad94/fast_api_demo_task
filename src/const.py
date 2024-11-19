@@ -7,3 +7,8 @@ class TaskStatuses(Enum):
     process = "process"
     expired = "expired"
     finished = "finished"
+
+
+class Roles(Enum):
+    user = "user"
+    admin = "admin"

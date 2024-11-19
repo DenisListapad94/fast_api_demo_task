@@ -32,7 +32,7 @@ class TaskRepository():
 
     async def get_task(self, task_id: int) -> Tasks:
         query = select(Tasks).where(Tasks.id == task_id)
-        result = await self.session.execute(query) # объект курсора
+        result = await self.session.execute(query)  # объект курсора
         return result.scalar_one_or_none()
 
     async def get_task_comment(self, task_id: int) -> Tasks:
@@ -40,7 +40,7 @@ class TaskRepository():
                  .options(selectinload(Tasks.comments))
                  .where(Tasks.id == task_id)
                  )
-        result = await self.session.execute(query) # объект курсора
+        result = await self.session.execute(query)  # объект курсора
         return result.scalar_one_or_none()
 
     async def get_tasks(self) -> list[dict[str, Any]]:
@@ -84,7 +84,7 @@ class CommentRepository():
 
     async def get_comment(self, comment_id: int) -> Comment:
         query = select(Comment).where(Comment.id == comment_id)
-        result = await self.session.execute(query) # объект курсора
+        result = await self.session.execute(query)  # объект курсора
         return result.scalar_one_or_none()
 
     async def get_comments(self) -> list[dict[str, Any]]:
@@ -94,4 +94,3 @@ class CommentRepository():
             comment.__dict__ for comment in
             result.scalars().all()
         ]
-

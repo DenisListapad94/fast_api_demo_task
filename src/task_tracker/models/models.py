@@ -10,13 +10,13 @@ from src.core.orm.base import Base
 class Tasks(Base):
     __tablename__ = "tasks"
 
-    id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True, unique=True)
+    id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True)
     title: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[str] = mapped_column(String, nullable=True)
-    status: Mapped[TaskStatuses] = mapped_column(Enum(TaskStatuses), nullable=False, default="new")
+    status: Mapped[TaskStatuses] = mapped_column(String, nullable=True)
     created: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated: Mapped[datetime] = mapped_column(DateTime,nullable=True)
-
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     comments: Mapped[list["Comment"]] = relationship(
         argument="Comment",
         back_populates='task',
@@ -29,10 +29,16 @@ class Tasks(Base):
         lazy="selectin"
     )
 
+    user: Mapped[list["User"]] = relationship(
+        argument="User",
+        back_populates='tasks',
+        lazy="selectin"
+    )
+
 
 class Comment(Base):
     __tablename__ = "comments"
-    id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True, unique=True)
+    id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True)
 
     comment: Mapped[str] = mapped_column(String, nullable=False)
     rating: Mapped[int] = mapped_column(Integer, nullable=True )
@@ -51,7 +57,7 @@ class Comment(Base):
 
 class TaskTag(Base):
     __tablename__ = "task_tags"
-    id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True, unique=True)
+    id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True)
 
     task_id: Mapped[int] = mapped_column(ForeignKey("tasks.id"))
     tag_id: Mapped[int] = mapped_column(ForeignKey("tags.id"))
@@ -69,7 +75,7 @@ class TaskTag(Base):
 class Tag(Base):
     __tablename__ = "tags"
 
-    id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True, unique=True)
+    id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True)
     name: Mapped[str] = mapped_column(String, nullable=False)
 
     created: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

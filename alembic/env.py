@@ -10,6 +10,7 @@ from src.config import DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS
 # access to the values within the .ini file in use.
 from src.core.orm.base import Base
 from src.task_tracker.models import Tasks
+from src.auth.models import User
 
 config = context.config
 
