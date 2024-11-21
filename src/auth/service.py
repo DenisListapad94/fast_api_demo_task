@@ -7,7 +7,7 @@ from src.auth.models import User
 from src.auth.schemas import UserRegisterSchema
 
 
-class TaskService():
+class UserService():
     def __init__(self, session: AsyncSession):
         self.session = session
         self.repository = UserRepository(session=session)

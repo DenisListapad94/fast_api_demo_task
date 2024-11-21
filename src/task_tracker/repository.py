@@ -22,7 +22,6 @@ class TaskRepository():
         task = Tasks(
             title=task_data.title,
             description=task_data.description,
-            status=task_data.status
         )
         self.session.add(task)
         await self.session.commit()

@@ -23,7 +23,6 @@ class ResponseCommentSchema(CreateCommentsSchema):
 class BaseTasksSchema(BaseModel):
     title: str
     description: str
-    status: TaskStatuses = "new"
 
 
 class CreateTaskSchema(BaseTasksSchema):

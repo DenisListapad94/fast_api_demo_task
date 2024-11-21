@@ -16,7 +16,7 @@ class Tasks(Base):
     status: Mapped[TaskStatuses] = mapped_column(String, nullable=True)
     created: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated: Mapped[datetime] = mapped_column(DateTime,nullable=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"),nullable=True)
     comments: Mapped[list["Comment"]] = relationship(
         argument="Comment",
         back_populates='task',

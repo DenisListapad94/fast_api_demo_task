@@ -1,8 +1,10 @@
-from fastapi import Query, Body, APIRouter, Depends
+from fastapi import Query, Body, APIRouter, Depends, BackgroundTasks
 from src.task_tracker.schemas import CreateTaskSchema, ResponseTaskSchema, ResponseCommentSchema, CreateCommentsSchema
 from src.task_tracker.service import TaskService, CommentService
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.core.orm.database import get_async_session
+
+from src.task_tracker.tasks import long_time_task, dummy_task
 
 router = APIRouter(
     prefix="/tasks",
@@ -111,3 +113,21 @@ async def create_comment_handler(
     comment_service = CommentService(session=session)
 
     return await comment_service.create(comment)
+
+
+@router.post(
+    "/long",
+    description="create comment",
+    # response_model=ResponseCommentSchema,
+    status_code=201
+)
+def create_long_task_response_handler(
+        delay: int,
+        # background_tasks: BackgroundTasks,
+        # task: CreateTaskSchema,
+        # session: AsyncSession = Depends(get_async_session)
+):
+    # background_tasks.add_task(long_time_task, delay=delay, session=session, task=task)
+    # result = await long_time_task(10)
+    dummy_task.delay(delay)
+    return {"status code": 200}
