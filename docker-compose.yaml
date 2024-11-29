@@ -1,0 +1,67 @@
+version: "3"
+services:
+  api:
+    build: .
+    ports:
+      - "8001:8000"
+    command: uvicorn src.main:app --host 0.0.0.0 --reload
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DB_USER = postgres
+      - DB_PASS = postgres
+      - DB_NAME =postgres
+    depends_on:
+      - redis
+      - db
+  db:
+    image: postgres
+    container_name: postgres_db
+    restart: always
+    ports:
+      - 15432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+        - pgdata:/var/lib/postgresql/data
+  redis:
+    image: redis:alpine
+    restart: always
+    volumes:
+      - .:/app
+    ports:
+      - "6379:6379"
+
+  celery:
+    restart: always
+    build:
+      context: .
+    environment:
+      CELERY_BROKER_URL: "redis://redis:6379/0"
+      CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+    command: celery -A src.celery_conf.celery_app worker --pool=solo -l info
+    volumes:
+      - ./config:/config
+    depends_on:
+      - redis
+  flower:
+    restart: always
+    build:
+      context: .
+    environment:
+      CELERY_BROKER_URL: "redis://redis:6379/0"
+      CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+    command: celery -A src.celery_conf.celery_app flower
+    volumes:
+      - ./config:/config
+    ports:
+      - "5566:5555"
+    depends_on:
+      - celery
+      - redis
+volumes:
+  pgdata:
+
+
